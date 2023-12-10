@@ -6,7 +6,7 @@ const ChatComponent = () => {
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState('');
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (userInput.trim() === '') {
       return; // Do not send empty messages
     }
@@ -14,10 +14,29 @@ const ChatComponent = () => {
     // Add the user's message to the list of messages
     setMessages([...messages, { text: userInput, user: 'user' }]);
 
-    // TODO: Send the user's message to ChatGPT API and handle the response
+    const response = await sendToPythonServer(userInput);
+
+    setMessages([...messages, {text: response.otResponse, user: 'bot'}]);
 
     // Clear the input box
     setUserInput('');
+  };
+
+  const sendToPythonServer = async (message) => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message })
+      });
+
+      const result = await response.json();
+      return results;
+    } catch (error) {
+      console.error('Error sending message to Python server:', error);
+    }
   };
 
   return (
