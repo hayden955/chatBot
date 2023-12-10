@@ -19,7 +19,7 @@ def get_chatgpt_response(user_message):
     api_url = 'https://api.openai.com/v1/chat/completions'
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer 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',  # Replace with your actual API key
+        'Authorization': 'Bearer API_KEY',  # Replace with your actual API key
     }
     payload = {
         'messages': [
