@@ -26,11 +26,17 @@ def get_chatgpt_response(user_message):
             {'role': 'system', 'content': 'You are a helpful assistant.'},
             {'role': 'user', 'content': user_message},
         ],
+        "model": "gpt-3.5-turbo-0613",
     }
 
     response = requests.post(api_url, json=payload, headers=headers)
-    bot_response = response.json()['choices'][0]['message']['content']
-    return bot_response
+    
+    if response.ok:
+        bot_response = response.json()['choices'][0]['message']['content']
+        return bot_response
+    else:
+        print("API Request Failed:", response.text)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

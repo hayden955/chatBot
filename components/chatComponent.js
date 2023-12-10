@@ -10,21 +10,27 @@ const ChatComponent = () => {
     if (userInput.trim() === '') {
       return; // Do not send empty messages
     }
-
+  
     // Add the user's message to the list of messages
-    setMessages([...messages, { text: userInput, user: 'user' }]);
-
+    const userMessage = { text: userInput, user: 'user' };
+  
+    // Send the user's message to the Python server
     const response = await sendToPythonServer(userInput);
-
-    setMessages([...messages, {text: response.otResponse, user: 'bot'}]);
-
+  
+    // Add the bot's response to the list of messages
+    const botMessage = { text: response.botResponse, user: 'bot' };
+  
+    // Update the state with both user and bot messages
+    setMessages([...messages, userMessage, botMessage]);
+  
     // Clear the input box
     setUserInput('');
   };
+  
 
   const sendToPythonServer = async (message) => {
     try {
-      const response = await fetch('http://127.0.0.1:5000', {
+      const response = await fetch('http://127.0.0.1:5000/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -32,7 +38,7 @@ const ChatComponent = () => {
         body: JSON.stringify({ message })
       });
 
-      const result = await response.json();
+      const results = await response.json();
       return results;
     } catch (error) {
       console.error('Error sending message to Python server:', error);
