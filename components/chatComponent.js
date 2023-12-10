@@ -22,14 +22,21 @@ const ChatComponent = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.headingContainer}>
+        <Text style={styles.headingText}>Ask Away</Text>
+      </View>
       <FlatList
-        data={messages}
+        data={messages.slice().reverse()}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
-          <View style={item.user === 'user' ? styles.userMessage : styles.botMessage}>
-            <Text style={styles.textColor}>{item.text}</Text>
+          <View style={item.user === 'user' ? styles.userMessageContainer : styles.botMessageContainer}>
+            <View style={item.user === 'user' ? styles.userMessage : styles.botMessage}>
+              <Text style={styles.textColor}>{item.text}</Text>
+            </View>
+            <View style={item.user === 'user' ? styles.dotRight : styles.dotLeft} />
           </View>
         )}
+        inverted
       />
       <View style={styles.inputContainer}>
         <TextInput
@@ -50,10 +57,49 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#4d4d4d',
     flex: 1,
+    paddingLeft: 16,
+    paddingRight: 16,
+    paddingBottom: 16,
+  },
+  headingContainer: {
     padding: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f2f2f2',
+  },
+  headingText: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: 'white',
   },
   textColor: {
     color: "#f2f2f2",
+  },
+  userMessageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-end',  // Align to the right for user messages
+  },
+  botMessageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',  // Align to the left for bot messages
+  },
+  dotRight: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#4caf50',  // Dot color for user messages
+    marginRight: 8,
+  },
+  dotLeft: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#4285f4',  // Dot color for bot messages
+    marginLeft: 8,
   },
   userMessage: {
     padding: 8,
@@ -68,7 +114,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   inputContainer: {
-    
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: '#f2f2f2',
