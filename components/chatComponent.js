@@ -55,10 +55,21 @@ const ChatComponent = () => {
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <View style={item.user === 'user' ? styles.userMessageContainer : styles.botMessageContainer}>
-            <View style={item.user === 'user' ? styles.userMessage : styles.botMessage}>
-              <Text style={styles.textColor}>{item.text}</Text>
-            </View>
-            <View style={item.user === 'user' ? styles.dotRight : styles.dotLeft} />
+            {item.user === 'user' ? (
+              <>
+                <View style={styles.userMessage}>
+                  <Text style={styles.textColor}>{item.text}</Text>
+                </View>
+                <View style={styles.dotRight} />
+              </>
+            ) : (
+              <>
+                <View style={styles.dotLeft} />
+                <View style={styles.botMessage}>
+                  <Text style={styles.textColor}>{item.text}</Text>
+                </View>
+              </>
+            )}
           </View>
         )}
         inverted
@@ -67,6 +78,7 @@ const ChatComponent = () => {
         <TextInput
           style={styles.inputBox}
           placeholder="Type your message..."
+          placeholderTextColor="#a0a0a0"
           value={userInput}
           onChangeText={(text) => setUserInput(text)}
         />
