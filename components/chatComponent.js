@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import LottieView from 'lottie-react-native';
 
 const ChatComponent = () => {
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState('');
+  const [isBotTyping, setIsBotTyping] = useState(false);
+  const [pendingMessage, setPendingMessage] = useState(null);
 
   const handleSendMessage = async () => {
     if (userInput.trim() === '') {
@@ -13,6 +16,12 @@ const ChatComponent = () => {
   
     // Add the user's message to the list of messages
     const userMessage = { text: userInput, user: 'user' };
+
+    //Clear input box
+    setUserInput('');
+    
+    //Simulate bot typing before sending the message
+    setIsBotTyping(true);
   
     // Send the user's message to the Python server
     const response = await sendToPythonServer(userInput);
@@ -22,7 +31,10 @@ const ChatComponent = () => {
   
     // Update the state with both user and bot messages
     setMessages([...messages, userMessage, botMessage]);
-  
+    
+    //Need to turn off indicator
+    setIsBotTyping(false);
+    
     // Clear the input box
     setUserInput('');
   };
@@ -50,30 +62,46 @@ const ChatComponent = () => {
       <View style={styles.headingContainer}>
         <Text style={styles.headingText}>Ask Away</Text>
       </View>
-      <FlatList
-        data={messages.slice().reverse()}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View style={item.user === 'user' ? styles.userMessageContainer : styles.botMessageContainer}>
-            {item.user === 'user' ? (
-              <>
-                <View style={styles.userMessage}>
-                  <Text style={styles.textColor}>{item.text}</Text>
-                </View>
-                <View style={styles.dotRight} />
-              </>
-            ) : (
-              <>
-                <View style={styles.dotLeft} />
-                <View style={styles.botMessage}>
-                  <Text style={styles.textColor}>{item.text}</Text>
-                </View>
-              </>
-            )}
+        <FlatList
+          data={messages.slice().reverse()}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <View style={item.user === 'user' ? styles.userMessageContainer : styles.botMessageContainer}>
+              <View style={styles.messageContainer}>
+                {item.user === 'user' ? (
+                  <>
+                    <View style={styles.userMessage}>
+                      <Text style={styles.textColor}>{item.text}</Text>
+                    </View>
+                    <View style={styles.dotRight} />
+                  </>
+                ) : (
+                  <>
+                  <View style={styles.dotLeft} />
+                  <View style={styles.botMessage}>
+                    <Text style={styles.textColor}>{item.text}</Text>
+                  </View>
+                </>
+                )}
+              </View>
           </View>
         )}
         inverted
       />
+      <View>
+        {isBotTyping && (
+          <>
+          <LottieView
+            source={require('../animations/TextAnimation.json')}
+            autoPlay
+            loop={true}
+            onAnimationFinish={() => setIsBotTyping(false)}
+            style={styles.typingAnimation}
+          />
+          <View style={styles.dotLeft} />
+          </>
+        )}
+      </View>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.inputBox}
@@ -116,27 +144,41 @@ const styles = StyleSheet.create({
   },
   userMessageContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-end',  // Align to the right for user messages
+    alignItems: 'flex-start',
+    alignSelf: 'flex-end', // Align to the right for user messages
+    marginLeft: 16, 
   },
   botMessageContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',  // Align to the left for bot messages
+    alignItems: 'flex-start',
+    alignSelf: 'flex-start', // Align to the left for bot messages
+    marginRight: 16,  
+  },
+  typingAnimation: {
+    width: 50,
+    height: 50,
+    alignItems: 'flex-start',
+    alignSelf: 'flex-start', // Align to the left for bot messages
+    marginRight: 16,  
+  },
+  messageContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',  // Align messages at the top
   },
   dotRight: {
     width: 8,
     height: 8,
     borderRadius: 4,
     backgroundColor: '#4caf50',  // Dot color for user messages
-    marginRight: 8,
+    marginTop: 16,  // Adjust the margin as needed
+
   },
   dotLeft: {
     width: 8,
     height: 8,
     borderRadius: 4,
     backgroundColor: '#4285f4',  // Dot color for bot messages
-    marginLeft: 8,
+    marginTop: 16,
   },
   userMessage: {
     padding: 8,
