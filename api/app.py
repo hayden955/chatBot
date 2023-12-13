@@ -1,11 +1,17 @@
 from flask import Flask, request, jsonify
 import requests
 from flask_cors import CORS
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+api_key = os.environ.get('OPENAI_API_KEY')
 
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/api/chat', methods=['POST', 'GET'])
+@app.route('/api/chat', methods=['POST'])
 def chat():
     data = request.get_json()
     user_message = data.get('message')
@@ -19,7 +25,7 @@ def get_chatgpt_response(user_message):
     api_url = 'https://api.openai.com/v1/chat/completions'
     headers = {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer API_KEY',  # Replace with your actual API key
+        'Authorization': f'Bearer {api_key}',  # Replace with your actual API key
     }
     payload = {
         'messages': [
