@@ -19,6 +19,9 @@ const ChatComponent = () => {
 
     //Clear input box
     setUserInput('');
+
+    //add user message to display
+    setMessages([...messages, userMessage]);
     
     //Simulate bot typing before sending the message
     setIsBotTyping(true);
@@ -88,17 +91,17 @@ const ChatComponent = () => {
         )}
         inverted
       />
-      <View>
+      <View style={styles.typingContainer}>
         {isBotTyping && (
           <>
-          <LottieView
-            source={require('../animations/TextAnimation.json')}
-            autoPlay
-            loop={true}
-            onAnimationFinish={() => setIsBotTyping(false)}
-            style={styles.typingAnimation}
-          />
-          <View style={styles.dotLeft} />
+            <View style={styles.dotLeft} />
+            <LottieView
+              source={require('../animations/TextAnimation.json')}
+              autoPlay
+              loop={true}
+              onAnimationFinish={() => setIsBotTyping(false)}
+              style={styles.typingAnimation}
+            />
           </>
         )}
       </View>
@@ -157,7 +160,6 @@ const styles = StyleSheet.create({
   typingAnimation: {
     width: 50,
     height: 50,
-    alignItems: 'flex-start',
     alignSelf: 'flex-start', // Align to the left for bot messages
     marginRight: 16,  
   },
@@ -171,7 +173,10 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: '#4caf50',  // Dot color for user messages
     marginTop: 16,  // Adjust the margin as needed
-
+  },
+  typingContainer: {
+    flexDirection: 'row',
+    alignItems: 'top',
   },
   dotLeft: {
     width: 8,
