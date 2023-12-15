@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import LottieView from 'lottie-react-native';
+
 
 const ChatComponent = () => {
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState('');
   const [isBotTyping, setIsBotTyping] = useState(false);
-  const [pendingMessage, setPendingMessage] = useState(null);
+  
+  // Helper function to detect if the message is asking for news
+  const isAskingForNews = useCallback((message) => {
+    const lowerCaseMessage = message.toLowerCase();
+    // Simple checks for phrases that might indicate a request for news 
+    return lowerCaseMessage.includes("latest news") || lowerCaseMessage.includes("current event") || lowerCaseMessage.includes("update on") || lowerCaseMessage.includes("show me news about") || lowerCaseMessage.includes("news");
+  }, []);
+
+  
 
   const handleSendMessage = async () => {
     if (userInput.trim() === '') {
@@ -40,6 +49,8 @@ const ChatComponent = () => {
     
     // Clear the input box
     setUserInput('');
+
+
   };
   
 
@@ -161,7 +172,6 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     alignSelf: 'flex-start', // Align to the left for bot messages
-    marginRight: 16,  
   },
   messageContainer: {
     flexDirection: 'row',
