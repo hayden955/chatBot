@@ -1,0 +1,15 @@
+service: chatbot-backend
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: us-east-1
+
+functions:
+  chatbot:
+    handler: handler.chat
+    events:
+      - http:
+          path: api/chat
+          method: post
+          cors: true
