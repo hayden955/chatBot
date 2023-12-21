@@ -17,15 +17,12 @@ Any code editor (e.g., VSCode, Atom)
 
 ## **Installation**
 Clone the Repository:
-
-  git clone https://github.com/hayden955/chatBot.git
+`git clone https://github.com/hayden955/chatBot.git`
   
 ## **Install Dependencies:**
 
 Navigate to the project directory and run:
-
-  Copy code
-  npm install
+`npm install`
   
 ## **Backend Setup:**
 Set up your AWS Lambda functions.
@@ -33,14 +30,12 @@ Ensure that the Python environment is properly configured.
 
 ## **Running the App:**
 Use the following command to start the React Native server:
-
-  npx react-native start
+`npx react-native start`
     
 To run the app on a device or emulator, use:
-  
-  npx react-native run-android
-  or
-  npx react-native run-ios
+`npx react-native run-android`
+or
+`npx react-native run-ios`
   
 ## **Usage**
 To use the app simply have a conversation with the chatbot. This educational tool can be used to learn, inspire, and create.
